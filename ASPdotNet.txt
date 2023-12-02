@@ -1,0 +1,17 @@
+<table>
+    <tr>
+        <td>Document Library Name:</td>
+        <td><asp:TextBox ID="txtDocumentLibraryName" runat="server"></asp:TextBox></td>
+    </tr>
+    <tr>
+        <td>Description:</td>
+        <td><asp:TextBox ID="txtDescription" runat="server" TextMode="MultiLine"></asp:TextBox></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><asp:Button ID="btnCreateDocumentLibrary" runat="server" Text="Create" Width="90px" OnClick="BtnCreateDocumentLibrary_Click" /></td>
+    </tr>
+    <tr>
+        <td><asp:Label ID="lblMessage" runat="server" Text=""></asp:Label></td>
+    </tr>
+</table>

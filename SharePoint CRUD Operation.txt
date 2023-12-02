@@ -1,0 +1,204 @@
+HTML Code
+-----------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://onlysharepoint2013.sharepoint.com/sites/Raju/SiteAssets/Preetihtml/UserInfoJs.js"></script>
+    <meta charset="utf-8" />
+    <title>My Html</title>
+</head>
+
+<body>
+    <h2>Information Form</h2>
+    Username:<br>
+    <input type="text" name="Username" id="usrname" />
+    <br><br>
+    Password:<br>
+    <input type="password" name="password" id="usrpwd" />
+    <br><br>
+    EmailID:<br>
+    <input type="email" name="EmailID" id="usrid" />
+    <br><br>
+    Gender:<br>
+    <div id="gend">
+        <input type="radio" name="gender" value="Male" id="gen0" /> Male
+        <input type="radio" name="gender" value="Female" id="gen1" /> Female
+    </div>
+    <br><br>
+    <input type="submit" value="Submit" id="btnSubmit" />
+    <br>
+    <p id="pTitle"></p>
+</body>
+</html>
+
+******************************************************************************************************************************
+Creation/Insertion code 
+--------------------------------------------------------------------------------------------------------------------------------
+$(document).ready(function () {
+$("#btnSubmit").click(function () {
+insertitemtolist();
+});
+});
+function insertitemtolist() {
+var username = $("#usrname").val();
+var password = $("#usrpwd").val();
+var emailId = $("#usrid").val();
+var gender = $("input[name='gender']:checked").val();
+var clientContext = new SP.ClientContext.get_current();
+var oList = clientContext.get_web().get_lists().getByTitle('CmpanyInfoList');
+var item = new SP.ListItemCreationInformation();
+var oListItem = oList.addItem(item);
+oListItem.set_item('Title', username);
+oListItem.set_item('Password', password);
+oListItem.set_item('EmailID', emailId);
+oListItem.set_item('Gender', gender);
+oListItem.update();
+clientContext.load(oListItem);
+clientContext.executeQueryAsync(Function.createDelegate(this, this.onQuerySucceeded), Function.createDelegate(this, this.onQueryFailed));
+}
+function onQuerySucceeded(sender, args) {
+$("#pTitle").html("successfully executed");
+}
+function onQueryFailed(sender, args) {
+alert('request failed ' + args.get_message() + '\n' + args.get_stackTrace());
+}
+
+******************************************************************************************************************************
+Updation code 
+--------------------------------------------------------------------------------------------------------------------------------
+
+$(document).ready(function () {
+ExecuteOrDelayUntilScriptLoaded(retrieveListItems, "sp.js");
+$("#btnUpdate").click(function () {
+updateListItemByID();
+});
+});
+var masterListItem;
+function retrieveListItems() {
+var id = GetParameterValues('MyID');
+getitemsbyID(id);
+}
+function getitemsbyID(itemID) {
+var clientContext = new SP.ClientContext.get_current();
+var masterlist = clientContext.get_web().get_lists().getByTitle('CmpanyInfoList');
+masterListItem = masterlist.getItemById(itemID);
+clientContext.load(masterListItem);
+clientContext.executeQueryAsync(Function.createDelegate(this, this.onQuerySucceeded),
+Function.createDelegate(this, this.onQueryFailed));
+}
+function onQuerySucceeded() {
+$("#usrname").val(masterListItem.get_item('Title'));
+$("#usrpwd").val(masterListItem.get_item('Password'));
+$("#usrid").val(masterListItem.get_item('EmailID'));
+if (masterListItem.get_item('Gender') == "Male") {
+$("#gen0").attr('checked', 'checked');
+}
+else if (masterListItem.get_item('Gender') == "Female") {
+$("#gen1").attr('checked', 'checked');
+}
+}
+function onQueryFailed(sender, args) {
+alert('Request failed. \nError: ' + args.get_message() + '\nStackTrace: ' + args.get_stackTrace());
+}
+function GetParameterValues(param) {
+var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+for (var i = 0; i < url.length; i++) {
+var urlparam = url[i].split('=');
+if (urlparam[0] == param) {
+return urlparam[1];
+}
+}
+}
+function updateListItemByID() {
+var id = GetParameterValues('MyID');
+var username = $("#usrname").val();
+var password = $("#usrpwd").val();
+var emailId = $("#usrid").val();
+var gender = $("input[name='gender']:checked").val();
+var clientContext = new SP.ClientContext.get_current();
+var oList = clientContext.get_web().get_lists().getByTitle('CmpanyInfoList');
+var oListItem = oList.getItemById(id);
+oListItem.set_item('Title', username);
+oListItem.set_item('Password', password);
+oListItem.set_item('EmailID', emailId);
+oListItem.set_item('Gender', gender);
+oListItem.update();
+clientContext.executeQueryAsync(Function.createDelegate(this, this.success), Function.createDelegate(this, this.failue));
+}
+function success() {
+alert('Item updated!');
+}
+function failue(sender, args) {
+alert('Request failed. ' + args.get_message() + '\n' + args.get_stackTrace());
+}
+
+******************************************************************************************************************************
+Reading data from List 
+--------------------------------------------------------------------------------------------------------------------------------
+
+// HTML code
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> ----> // $ in Jsom
+<script src="https://onlysharepoint2013.sharepoint.com/sites/Raju/SiteAssets/Preetihtml/UserInfoJs.js"></script> ---> SPServices in Jsom
+<meta charset="utf-8" />
+<title>ALL LIST ITEM</title>
+</head>
+<body>
+<p id="disp"></p>
+</body>
+</html>
+
+------------------------------------------------------------------------------------------------------------
+// JavaScript  code
+$(document).ready(function () {         
+getdatafromlist();                          
+});
+
+function getdatafromlist(){
+var clientContext = new SP.ClientContext.get_current();
+var oList = clientContext.get_web().get_lists().getByTitle('CompanyInfoList');
+var oListItems=oList.getItems(SP.CamlQuery.createAllItemsQuery());	------>to retrieve all list items we use CamlQuery 
+clientContext.load(oListItem);
+clientContext.executeQueryAsync(Function.createDelegate(this, this.onQuerySucceeded),
+Function.createDelegate(this, this.onQueryFailed));
+}
+function onQuerySucceeded(sender, args) {
+var newtitle='';
+var listItemEnum=oListItems.getEnumerator(); 				 ------> //whatever the data is in the list enumerator will fetch one by one
+while(listItemEnum.moveNext()){						 ------>As long as the Enumerator will find next item this is will return true
+var oListItem=listItemEnum.get_current().get_item('title');
+newtitle+=oListItem;
+}
+$("#disp").append(newtitle);
+}
+function onQueryFailed(sender, args) {
+alert('request failed ' + args.get_message() + '\n' + args.get_stackTrace());
+}
+
+******************************************************************************************************************************
+Delete data from List 
+--------------------------------------------------------------------------------------------------------------------------------
+
+// JavaScript  code
+$(document).ready(function () {
+deleteitem();                 
+});
+function deleteitem() {
+var dltItem=$("#dlttext").val();
+var clientContext = new SP.ClientContext.get_current();
+var oList = clientContext.get_web().get_lists().getByTitle('CompanyInfoList');
+oListItem=oList.getItemById(dltItem);						-------->Get the element by given ID
+oListItem.deleteObject();
+clientContext.executeQueryAsync(Function.createDelegate(this, this.onQuerySucceeded), 
+Function.createDelegate(this, this.onQueryFailed));
+}
+function onQuerySucceeded(sender, args) {
+$("#dltmsg").html("successfully deleted");
+}
+function onQueryFailed(sender, args) {
+alert('request failed ' + args.get_message() + '\n' + args.get_stackTrace());
+}

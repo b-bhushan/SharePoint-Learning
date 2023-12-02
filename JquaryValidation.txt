@@ -1,0 +1,35 @@
+   
+    $(document).ready(function () {
+        
+        $("#usrname").on("mouseout",function () {
+             var name = $("#usrname").val();
+             if(name==""){
+                $("#usrname").css("border","1px solid red");
+             }
+             else{}
+        });
+        $("#usrpwd").on("mouseout",function () {
+            var pwd  = $("#usrpwd").val();
+            if(pwd ==""){
+               $("#usrpwd").css("border","1px solid red");
+            }
+            else{}
+       });
+       $("#usrid").on("mouseout",function () {
+        var userid  = $("#usrid").val();
+        if(userid ==""){
+           $("#usrid").css("border","1px solid red");
+        }
+        else{}
+   });
+
+        $("#btnSubmit").click(function () {
+            var name = $("#usrname").val();
+            var pwd  = $("#usrpwd").val();
+            var userid  = $("#usrid").val();
+            alert("Hello "+name+" Your Password is : "+ pwd +" And Email is : "+userid);
+
+           
+        
+        });
+    });

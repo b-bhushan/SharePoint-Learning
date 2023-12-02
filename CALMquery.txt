@@ -1,0 +1,15 @@
+<Query>
+   <Where>
+      <Eq>
+         <FieldRef Name='Title' />
+         <Value Type='Text'>dummy@gmail.com</Value>
+      </Eq>
+   </Where>
+   <OrderBy>
+      <FieldRef Name='Title' Ascending='True' />
+   </OrderBy>
+</Query>
+<ViewFields>
+   <FieldRef Name='Title' />
+</ViewFields>
+<QueryOptions />
